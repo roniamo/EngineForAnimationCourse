@@ -1,0 +1,28 @@
+#pragma once
+
+#include "Scene.h"
+#include "Viewport.h"
+#include "IglMeshLoader.h"
+#include <utility>
+#include "igl\AABB.h"
+
+
+class BasicScene : public cg3d::Scene
+{
+public:
+    explicit BasicScene(std::string name, cg3d::Display* display) : Scene(std::move(name), display) {};
+    void Init(float fov, int width, int height, float near, float far);
+    void Update(const cg3d::Program& program, const Eigen::Matrix4f& proj, const Eigen::Matrix4f& view, const Eigen::Matrix4f& model) override;
+    void KeyCallback(cg3d::Viewport* viewport, int x, int y, int key, int scancode, int action, int mods) override;
+    ///
+    void CubeFrame(Eigen::AlignedBox<double, 3>& box, std::shared_ptr<cg3d::Model> obj);
+private:
+    std::shared_ptr<cg3d::Model> cube1;
+    std::shared_ptr<cg3d::Model> cube2;
+    std::shared_ptr<Movable> root;
+    std::shared_ptr<cg3d::Model> cubef1;
+    std::shared_ptr<cg3d::Model> cubef2;
+    Eigen::Vector3f velocity;
+    bool isBoxCollided(std::shared_ptr<cg3d::Model> model1, std::shared_ptr<cg3d::Model> model2, Eigen::AlignedBox<double, 3>& box1, Eigen::AlignedBox<double, 3>& box2);
+    bool checkForCollisionBetweenObjects(igl::AABB<Eigen::MatrixXd, 3>* tree1, igl::AABB<Eigen::MatrixXd, 3>* tree2);
+};
